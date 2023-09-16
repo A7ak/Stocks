@@ -80,7 +80,7 @@ import com.example.stocks.viewmodel.MyViewModel
                         Column {
                             stockItem(stock = stock)
                             Divider(
-                                color = colorResource(id = R.color.white),
+                                color = colorResource(id = R.color.light_black),
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
