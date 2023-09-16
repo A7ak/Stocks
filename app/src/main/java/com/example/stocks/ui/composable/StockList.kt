@@ -47,7 +47,6 @@ import com.example.stocks.viewmodel.MyViewModel
                     initialValue = DismissValue.Default,
                     confirmValueChange = {
                         if (it == DismissValue.DismissedToStart) {
-                            Log.d("composa77", "StockList: data removed")
                             viewModel.removeData(index = index)
                             false
                         } else {

@@ -28,7 +28,6 @@ class MyViewModel @Inject constructor(private val repo: MyRepo) : ViewModel() {
     fun removeData(index: Int): Boolean {
         val list = _data.value.toMutableList()
         list.removeAt(index)
-        Log.d("TAG", "removeData: $index $list")
         _data.update {
             list
         }
