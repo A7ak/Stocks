@@ -5,16 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -30,10 +31,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +46,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stocks.model.Stocks
 import com.example.stocks.ui.theme.StocksTheme
@@ -89,6 +94,14 @@ class MainActivity : ComponentActivity() {
         ) { values ->
 
             stockList(values, getStockList())
+            var state = remember{
+                mutableStateOf("")
+            }
+            TextField(value = state.value, onValueChange = {
+                state.value = it
+            })
+
+            
         }
 
     }
@@ -107,16 +120,13 @@ class MainActivity : ComponentActivity() {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(100.dp)
                 .background(Color.Black)
+                .padding(horizontal = 8.dp)
+                .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(weight = .5f, fill = true),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Center
-            ) {
+            Column() {
                 Text(
                     text = stock.name,
                     color = Color.White
@@ -128,42 +138,49 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
-            Image(
-                modifier = Modifier.weight(weight = .25F, fill = true).wrapContentHeight(Alignment.CenterVertically),
-                painter = if (stock.change > 0F) {
-                    painterResource(id = R.drawable.green_graph)
-                } else {
-                    painterResource(id = R.drawable.red_graph)
-                },
-                contentDescription = "graph"
-            )
-
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(weight = .25f, fill = true),
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.Center
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = stock.price.toString(),
-                    color = Color.White
+                Image(
+                    modifier = Modifier
+                        .size(80.dp, 40.dp)
+                        .wrapContentHeight(Alignment.CenterVertically),
+                    painter = if (stock.change > 0F) {
+                        painterResource(id = R.drawable.green_graph)
+                    } else {
+                        painterResource(id = R.drawable.red_graph)
+                    },
+                    contentDescription = "graph"
                 )
 
-                Text(
-                    modifier = Modifier
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
-                        .clip(shape = RoundedCornerShape(4.dp))
-                        .background(
-                            if (stock.change > 0F) {
-                                colorResource(id = R.color.green)
-                            } else {
-                                Color.Red
-                            }
-                        ),
-                    text = "${stock.change}%",
-                    color = Color.White
-                )
+                HorizontalSpacer(width = 16.dp)
+
+                Column(
+                    modifier = Modifier,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Text(
+                        text = stock.price.toString(),
+                        color = Color.White
+                    )
+
+                    VerticalSpacer(width = 8.dp)
+                    Text(
+                        modifier = Modifier
+                            .clip(shape = RoundedCornerShape(4.dp))
+                            .background(
+                                if (stock.change > 0F) {
+                                    colorResource(id = R.color.green)
+                                } else {
+                                    Color.Red
+                                }
+                            )
+                            .padding(vertical = 4.dp, horizontal = 8.dp)
+                        ,
+                        text = "${stock.change}%",
+                        color = Color.White
+                    )
+                }
             }
         }
         Divider(color = colorResource(id = R.color.light_black), modifier = Modifier.fillMaxWidth())
@@ -179,8 +196,9 @@ class MainActivity : ComponentActivity() {
             scaffoldState = scaffoldState,
             sheetContent = {
 
-            }
-        ) {
+            },
+            sheetPeekHeight = 0.dp,
+            ) {
         }
     }
 
@@ -230,3 +248,9 @@ class MainActivity : ComponentActivity() {
         return stockList
     }
 }
+
+@Composable
+fun HorizontalSpacer(width: Dp) = Spacer(modifier = Modifier.width(width))
+
+@Composable
+fun VerticalSpacer(width: Dp) = Spacer(modifier = Modifier.height(width))
