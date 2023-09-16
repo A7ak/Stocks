@@ -51,9 +51,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.stocks.R
 import com.example.stocks.model.Stocks
 import com.example.stocks.ui.theme.StocksTheme
@@ -63,7 +65,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    val viewModel by viewModels<MyViewModel>()
+    private val viewModel by viewModels<MyViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -177,12 +179,15 @@ class MainActivity : ComponentActivity() {
             Column() {
                 Text(
                     text = stock.name,
-                    color = Color.White
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Text(
                     text = stock.company,
-                    color = colorResource(id = R.color.grey)
+                    color = colorResource(id = R.color.grey),
+                    fontSize = 14.sp
                 )
             }
 
@@ -209,7 +214,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Text(
                         text = stock.price.toString(),
-                        color = Color.White
+                        color = Color.White,
+                        fontSize = 16.sp
                     )
 
                     VerticalSpacer(width = 8.dp)
@@ -223,9 +229,10 @@ class MainActivity : ComponentActivity() {
                                     Color.Red
                                 }
                             )
-                            .padding(vertical = 4.dp, horizontal = 8.dp),
+                            .padding(start = 10.dp,top= 6.dp, end = 4.dp, bottom = 6.dp),
                         text = "${stock.change}%",
-                        color = Color.White
+                        color = Color.White,
+                        fontSize = 14.sp
                     )
                 }
             }

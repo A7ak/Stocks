@@ -19,7 +19,7 @@ class MockData {
                 id = Math.random().toString(),
                 name = "Swiggy",
                 company = "Swiggy inc",
-                price = 85f,
+                price = 485f,
                 change = -2.6f
             )
         )
@@ -37,7 +37,7 @@ class MockData {
                 id = Math.random().toString(),
                 name = "Google",
                 company = "Alphabet inc",
-                price = 55f,
+                price = 255f,
                 change = 1.25f
             )
         )
