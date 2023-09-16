@@ -1,12 +1,14 @@
 package com.example.stocks
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,10 +22,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,10 +38,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDismissState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,7 +73,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     appBar(viewModel)
-                   // bottomSheet()
+                    // bottomSheet()
                 }
 
             }
@@ -83,7 +92,7 @@ class MainActivity : ComponentActivity() {
             topBar = {
                 TopAppBar(title = { Text(text = "stocks") }, actions = {
                     IconButton(onClick = {
-                       viewModel.addData()
+                        viewModel.addData()
                     }) {
                         Icon(
                             imageVector = Icons.Default.AddCircle,
@@ -95,17 +104,63 @@ class MainActivity : ComponentActivity() {
                 }, scrollBehavior = scrollBehavior)
             }
         ) { values ->
-            StockList(values,viewModel)
+            StockList(values, viewModel) {
+                viewModel.removeData(it)
+            }
         }
     }
+
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun StockList(values: PaddingValues, viewModel: MyViewModel) {
-       val list by viewModel.data.collectAsState()
-        LazyColumn(modifier = Modifier.padding(values), content = {
-          items(list) {
-              stockItem(stock = it)
-          }
-        })
+    fun StockList(values: PaddingValues, viewModel: MyViewModel, remove: (Int) -> Unit) {
+
+        val list by viewModel.data.collectAsState()
+
+        LazyColumn(
+            state = rememberLazyListState(),
+            modifier = Modifier.padding(values)
+        ) {
+            itemsIndexed(list) { index, stock ->
+
+                val dismissState = rememberDismissState(
+                    initialValue = DismissValue.Default,
+                    confirmValueChange = {
+                        if (it == DismissValue.DismissedToStart) {
+                            Log.d("composa77", "StockList: data removed")
+                            viewModel.removeData(index = index)
+                            false
+                        } else {
+                            true
+                        }
+                    }
+                )
+                SwipeToDismiss(
+                    state = dismissState,
+
+                    background = {
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Red)
+                                .padding(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "delete",
+                                tint = Color.White,
+                                modifier = Modifier.align(
+                                    Alignment.CenterEnd
+                                )
+                            )
+                        }
+                    },
+                    dismissContent = { stockItem(stock = stock) },
+                    directions = setOf(DismissDirection.EndToStart)
+                )
+
+            }
+        }
     }
 
     @Composable
@@ -168,8 +223,7 @@ class MainActivity : ComponentActivity() {
                                     Color.Red
                                 }
                             )
-                            .padding(vertical = 4.dp, horizontal = 8.dp)
-                        ,
+                            .padding(vertical = 4.dp, horizontal = 8.dp),
                         text = "${stock.change}%",
                         color = Color.White
                     )
@@ -191,7 +245,7 @@ class MainActivity : ComponentActivity() {
 
             },
             sheetPeekHeight = 0.dp,
-            ) {
+        ) {
         }
     }
 
