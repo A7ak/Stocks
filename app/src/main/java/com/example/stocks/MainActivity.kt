@@ -3,6 +3,7 @@ package com.example.stocks
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,13 +32,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,18 +48,23 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.stocks.model.Stocks
 import com.example.stocks.ui.theme.StocksTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    val viewModel by viewModels<MyViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             StocksTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    appBar()
-                    bottomSheet()
+                    appBar(viewModel)
+                   // bottomSheet()
                 }
 
             }
@@ -71,7 +74,7 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun appBar() {
+    fun appBar(viewModel: MyViewModel) {
         val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
         Scaffold(
             modifier = Modifier
@@ -80,7 +83,7 @@ class MainActivity : ComponentActivity() {
             topBar = {
                 TopAppBar(title = { Text(text = "stocks") }, actions = {
                     IconButton(onClick = {
-                        // handle click
+                       viewModel.addData()
                     }) {
                         Icon(
                             imageVector = Icons.Default.AddCircle,
@@ -92,26 +95,16 @@ class MainActivity : ComponentActivity() {
                 }, scrollBehavior = scrollBehavior)
             }
         ) { values ->
-
-            stockList(values, getStockList())
-            var state = remember{
-                mutableStateOf("")
-            }
-            TextField(value = state.value, onValueChange = {
-                state.value = it
-            })
-
-            
+            StockList(values,viewModel)
         }
-
     }
-
     @Composable
-    fun stockList(values: PaddingValues, stockList: List<Stocks>) {
+    fun StockList(values: PaddingValues, viewModel: MyViewModel) {
+       val list by viewModel.data.collectAsState()
         LazyColumn(modifier = Modifier.padding(values), content = {
-            items(stockList) { stock ->
-                stockItem(stock)
-            }
+          items(list) {
+              stockItem(stock = it)
+          }
         })
     }
 
@@ -206,46 +199,8 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun stockItemPreview() {
         StocksTheme {
-            appBar()
+            appBar(viewModel)
         }
-    }
-
-    fun getStockList(): List<Stocks> {
-        var stockList = ArrayList<Stocks>()
-
-        stockList.add(
-            Stocks(
-                name = "Zomato",
-                company = "Zomato inc",
-                price = 123f,
-                change = 3.5f
-            )
-        )
-        stockList.add(
-            Stocks(
-                name = "Swiggy",
-                company = "Swiggy inc",
-                price = 85f,
-                change = -2.6f
-            )
-        )
-        stockList.add(
-            Stocks(
-                name = "Apple",
-                company = "Apple inc",
-                price = 175f,
-                change = -0.42f
-            )
-        )
-        stockList.add(
-            Stocks(
-                name = "Google",
-                company = "Alphabet inc",
-                price = 55f,
-                change = 1.25f
-            )
-        )
-        return stockList
     }
 }
 
