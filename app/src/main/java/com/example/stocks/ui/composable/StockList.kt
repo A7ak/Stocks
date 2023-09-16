@@ -39,6 +39,7 @@ import com.example.stocks.viewmodel.MyViewModel
             state = rememberLazyListState(),
             modifier = Modifier
                 .padding(values)
+                .padding(horizontal = 6.dp)
         ) {
             itemsIndexed(list) { index, stock ->
 
