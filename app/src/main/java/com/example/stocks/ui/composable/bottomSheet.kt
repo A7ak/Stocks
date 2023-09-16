@@ -1,6 +1,5 @@
 package com.example.stocks.ui.composable
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -19,7 +18,6 @@ import com.example.stocks.viewmodel.MyViewModel
         val scaffoldState = rememberBottomSheetScaffoldState()
 
         BottomSheetScaffold(
-            modifier = Modifier.background(Color.White),
             scaffoldState = scaffoldState,
             sheetContent = {
                 Text(
