@@ -1,43 +1,8 @@
-package com.example.stocks
+package com.example.stocks.service
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import com.example.stocks.model.Stocks
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
-@HiltViewModel
-class MyViewModel @Inject constructor() : ViewModel() {
-
-    private val _data = MutableStateFlow<List<Stocks>>(emptyList())
-
-    val data: StateFlow<List<Stocks>> = _data
-
-    fun addData() {
-        _data.update {
-           var newList =  it.toMutableList()
-            newList.add(getStockList().random())
-            newList
-        }
-    }
-
-    fun removeData(index: Int) : Boolean {
-      //  _data.update {
-            var list = _data.value.toMutableList()
-        list.removeAt(index)
-        Log.d("TAG", "removeData: $index $list")
-        _data.update {
-            list
-        }
-        //_data.value = list
-        //}
-        return true
-        }
-
-
+class MockData {
     fun getStockList(): List<Stocks> {
         var stockList = ArrayList<Stocks>()
         stockList.add(

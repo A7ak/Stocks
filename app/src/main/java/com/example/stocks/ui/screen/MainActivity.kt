@@ -1,4 +1,4 @@
-package com.example.stocks
+package com.example.stocks.ui.screen
 
 import android.os.Bundle
 import android.util.Log
@@ -54,8 +54,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.stocks.R
 import com.example.stocks.model.Stocks
 import com.example.stocks.ui.theme.StocksTheme
+import com.example.stocks.viewmodel.MyViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

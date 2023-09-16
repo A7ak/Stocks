@@ -1,4 +1,4 @@
-package com.example.stocks
+package com.example.stocks.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
